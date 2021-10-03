@@ -46,6 +46,7 @@ class PermissionUtil(private val activity: FragmentActivity, private val context
             context.lifecycleOwner()?.let { owner ->
                 Log.e("sss", "callback result")
                 requestResult.observe(owner) {
+                    callback(it)
                     requestResult.removeObservers(owner)
                 }
             }
@@ -65,8 +66,9 @@ class PermissionUtil(private val activity: FragmentActivity, private val context
                 if (declineCounter == 2) {
                     showPermissionDialog()
                     declineCounter = 0
+                } else {
+                    activity.showToast("Yakınınızdaki konumları bulabilmemiz için gerekli izinleri vermeniz gerekiyor.")
                 }
-                activity.showToast("Uygulamanın kullanılabilmsesi için lütfen gerekli izinleri verin.")
                 requestResult.postValue(false)
             }
 
@@ -74,7 +76,7 @@ class PermissionUtil(private val activity: FragmentActivity, private val context
 
     private fun showPermissionDialog() {
         MaterialAlertDialogBuilder(context).setTitle("İzin gerekli")
-            .setMessage("Resimleri indirmek ve duvar kağıdı olarak ayarlamak için açılan sayfada gerekli izinleri verin.")
+            .setMessage("Yakınınızdaki konumları bulabilmemiz için gerekli izinleri vermeniz verin")
             .setPositiveButton("Tamam") { _, _ ->
 
                 val intent = Intent(ACTION_APPLICATION_DETAILS_SETTINGS)

@@ -4,9 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/omerd/AndroidStudioProjects/WeatherApp/app/src/main/res/layout/activity_main.xml" value="0.121875" />
-        <entry key="..\:/Users/omerd/AndroidStudioProjects/WeatherApp/app/src/main/res/layout/detail_fragment.xml" value="0.121875" />
+        <entry key="..\:/Users/omerd/AndroidStudioProjects/WeatherApp/app/src/main/res/layout/detail_fragment.xml" value="0.264" />
         <entry key="..\:/Users/omerd/AndroidStudioProjects/WeatherApp/app/src/main/res/layout/home_fragment.xml" value="0.136" />
+        <entry key="..\:/Users/omerd/AndroidStudioProjects/WeatherApp/app/src/main/res/layout/item_future_day_weather.xml" value="0.2421875" />
         <entry key="..\:/Users/omerd/AndroidStudioProjects/WeatherApp/app/src/main/res/layout/item_location.xml" value="0.264" />
+        <entry key="..\:/Users/omerd/AndroidStudioProjects/WeatherApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.13802083333333334" />
       </map>
     </option>
   </component>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -8,18 +8,100 @@
             type="com.android.weatherapp.view.detail.DetailViewModel" />
     </data>
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/black"
         tools:context=".view.detail.DetailFragment">
 
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clDetailTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gap6X"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/ivDetailStatus"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:scaleType="fitXY"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/vDetailTitleLine"
+                android:layout_width="0.5dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="@dimen/gap2X"
+                android:layout_marginTop="@dimen/gapX"
+                android:layout_marginBottom="@dimen/gapX"
+                android:background="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ivDetailStatus"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/gap2X"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                app:layout_constraintStart_toEndOf="@+id/vDetailTitleLine"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tvDetailLocationName"
+                    style="@style/TextViewRobotoBoldStyleThree"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Savannah" />
+
+                <TextView
+                    android:id="@+id/tvDetailDate"
+                    style="@style/TextViewRobotoRegularStyleOne"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    tools:text="Savannah" />
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <TextView
+            android:id="@+id/tvDetailTemp"
+            style="@style/TextViewRobotoBoldHeadingStyleFive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gap3X"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/clDetailTop"
+            tools:text="55" />
+
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:id="@+id/tvSelectedLocation"
-            android:text="Hello" />
-    </FrameLayout>
+            android:layout_height="0dp"
+            android:id="@+id/rvDetailFragment"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvDetailTemp"/>
+
+
+        <ProgressBar
+            android:id="@+id/pbDetail"
+            style="@style/ProgressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

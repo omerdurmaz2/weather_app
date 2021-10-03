@@ -4,14 +4,20 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.weatherapp.R
 import com.android.weatherapp.base.BaseFragment
 import com.android.weatherapp.databinding.DetailFragmentBinding
 import com.android.weatherapp.model.LocationWeatherModel
-import com.android.weatherapp.model.SearchResultModel
 import com.android.weatherapp.service.ResultWrapper
+import com.android.weatherapp.util.Constants
+import com.android.weatherapp.util.DateUtils
+import com.android.weatherapp.util.ext.setGone
 import com.android.weatherapp.util.ext.showToast
+import com.android.weatherapp.util.ext.tempFormat
+import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
 @AndroidEntryPoint
 class DetailFragment : BaseFragment<DetailFragmentBinding>(R.layout.detail_fragment) {
@@ -21,7 +27,7 @@ class DetailFragment : BaseFragment<DetailFragmentBinding>(R.layout.detail_fragm
 
 
     private val viewModel: DetailViewModel by viewModels()
-
+    private lateinit var listAdapter: FutureWeathersAdapter
     override fun init() {
         binding?.viewModel = viewModel
 
@@ -31,12 +37,25 @@ class DetailFragment : BaseFragment<DetailFragmentBinding>(R.layout.detail_fragm
             } else activity?.onBackPressed()
         }
 
+        initRecyclerView()
+
+        observeDetail()
+    }
+
+    private fun initRecyclerView() {
+        listAdapter = FutureWeathersAdapter(context, listOf()) {}
+        binding?.rvDetailFragment?.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = listAdapter
+        }
+    }
+
+    private fun observeDetail() {
         viewModel.locationDetail.observe(viewLifecycleOwner) {
             Log.e("sss", "result: $it")
             when (it) {
                 is ResultWrapper.Success<*> -> {
-                    binding?.tvSelectedLocation?.text =
-                        (it.value as LocationWeatherModel).toString()
+                    bindValues(it.value as LocationWeatherModel)
                 }
                 is ResultWrapper.GenericError -> {
 
@@ -47,5 +66,39 @@ class DetailFragment : BaseFragment<DetailFragmentBinding>(R.layout.detail_fragm
                 }
             }
         }
+    }
+
+
+    private fun bindValues(value: LocationWeatherModel) {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis =
+            DateUtils.getLongDateFromApiDate(value.consolidatedWeather[0].applicable_date)
+
+        binding?.pbDetail?.setGone()
+        Constants.Server.apply {
+            context?.let {
+                binding?.ivDetailStatus?.let { it1 ->
+                    Glide.with(it).load(
+                        baseUrl.plus(imagePath)
+                            .plus(value.consolidatedWeather[0].weather_state_abbr).plus(
+                                fileType
+                            )
+                    ).into(it1)
+                }
+            }
+        }
+
+
+        binding?.tvDetailLocationName?.text = value.title
+        binding?.tvDetailDate?.text =
+            DateUtils.getDayName(calendar.timeInMillis).plus(", ")
+                .plus(DateUtils.getMonthName(calendar.timeInMillis)).plus(" ")
+                .plus(calendar.get(Calendar.DAY_OF_MONTH))
+        binding?.tvDetailTemp?.text = value.consolidatedWeather[0].the_temp.tempFormat()
+
+
+        listAdapter.list = value.consolidatedWeather
+        listAdapter.notifyItemInserted(0)
+
     }
 }

@@ -7,9 +7,13 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -26,6 +30,10 @@ import com.android.weatherapp.view.MainActivity
 import com.google.android.gms.location.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import androidx.core.content.ContextCompat.getSystemService
+import com.android.weatherapp.util.ext.showSoftKeyboard
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.widget.addTextChangedListener
 
 
 @AndroidEntryPoint
@@ -36,28 +44,35 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(R.layout.home_fragment) {
 
 
     private val viewModel: HomeViewModel by viewModels()
-    private var permissionUtil: PermissionUtil? = null
-    private lateinit var locationClient: FusedLocationProviderClient
-    private lateinit var listAdapter: SearchResultAdapter
+    private var locationClient: FusedLocationProviderClient? = null
+    private var listAdapter: SearchResultAdapter? = null
+    var permissionUtil: PermissionUtil? = null
+
 
     override fun init() {
         binding?.viewModel = viewModel
 
-        permissionUtil = activity?.let { context?.let { it1 -> PermissionUtil(it, it1) } }
+        Log.e("sss", "search text = ${viewModel.searchText}, lat: ${viewModel.latitude}")
+        if (permissionUtil == null)
+            permissionUtil = activity?.let { context?.let { it1 -> PermissionUtil(it, it1) } }
 
         observeLocations()
 
-        locationClient =
-            LocationServices.getFusedLocationProviderClient((activity as MainActivity));
+        if (locationClient == null)
+            locationClient =
+                LocationServices.getFusedLocationProviderClient((activity as MainActivity));
 
         initRecyclerView()
 
-        getDeviceLocation()
-
-        onTextChange()
+        if (viewModel.searchText == "" && viewModel.latitude == 0.0 && viewModel.longitude == 0.0) {
+            getDeviceLocation()
+            Log.e("sss", "get device location 2")
+        }
     }
 
+
     private fun initRecyclerView() {
+        if (listAdapter != null) return
         listAdapter = SearchResultAdapter(context, listOf()) {
             val bundle = Bundle()
             bundle.putString("location_id", it?.woeid.toString())
@@ -69,29 +84,48 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(R.layout.home_fragment) {
         }
     }
 
-    private fun onTextChange() {
-        binding?.etSearchLocation?.doAfterTextChanged {
-            viewModel.editCounter++
-            viewModel.startCountDown(it.toString().trim())
+
+    override fun initTextChangeListeners() {
+        super.initTextChangeListeners()
+
+        binding?.etSearchLocation?.addTextChangedListener(textChangeListener)
+    }
+
+    private val textChangeListener = object : TextWatcher {
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
         }
+
+        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        }
+
+        override fun afterTextChanged(p0: Editable?) {
+            viewModel.editCounter++
+            viewModel.startCountDown(p0.toString().trim())
+        }
+
     }
 
 
     override fun initClickListeners() {
         super.initClickListeners()
         binding?.ivFindMyLocation?.setOnClickListener {
+            binding?.etSearchLocation?.text?.clear()
+            viewModel.searchText = ""
             getDeviceLocation()
         }
     }
 
     private fun observeLocations() {
+        viewModel.searchLocations.removeObservers(viewLifecycleOwner)
+
         viewModel.searchLocations.observe(viewLifecycleOwner) {
             when (it) {
                 is ResultWrapper.Success<*> -> {
                     var list = it.value as List<SearchResultModel?>
                     Log.e("sss", "list$list")
-                    listAdapter.list = list
-                    listAdapter.notifyDataSetChanged()
+                    listAdapter?.list = list
+                    listAdapter?.notifyDataSetChanged()
                 }
                 is ResultWrapper.GenericError -> {
 
@@ -100,21 +134,29 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(R.layout.home_fragment) {
                     showToast(getString(R.string.internet_connection_warning))
                     activity?.onBackPressed()
                 }
+                null -> {
+
+                }
             }
         }
     }
 
     private fun getDeviceLocation() {
-        Log.e("sss", "get device location")
         permissionUtil?.checkPermissions {
             if (it) {
+                Log.e("sss", "has permission")
                 if (isLocationEnabled()) {
                     getDeviceLastLocation()
                 } else {
                     navigateToLocationSettings()
                 }
             } else {
+                Log.e("sss", "has not permission")
+
                 binding?.etSearchLocation?.requestFocus()
+                val imm =
+                    context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+                imm!!.showSoftInput(binding?.etSearchLocation, InputMethodManager.SHOW_IMPLICIT)
             }
         }
     }
@@ -130,7 +172,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(R.layout.home_fragment) {
     private fun getDeviceLastLocation() {
         Log.e("sss", "get last location")
 
-        locationClient.lastLocation.addOnCompleteListener {
+        locationClient?.lastLocation?.addOnCompleteListener {
             if (it.result != null) {
                 viewModel.latitude = it.result.latitude
                 viewModel.longitude = it.result.longitude
@@ -154,7 +196,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(R.layout.home_fragment) {
         mLocationRequest.numUpdates = 1
 
         locationClient = LocationServices.getFusedLocationProviderClient(context)
-        locationClient.requestLocationUpdates(
+        locationClient?.requestLocationUpdates(
             mLocationRequest,
             mLocationCallback,
             Looper.myLooper()

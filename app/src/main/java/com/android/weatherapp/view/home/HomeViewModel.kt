@@ -1,5 +1,7 @@
 package com.android.weatherapp.view.home
 
+import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.weatherapp.model.SearchResultModel
@@ -18,12 +20,14 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val restController: RestControllerFactory,
-     val gson: Gson,
+    val gson: Gson,
 ) : ViewModel() {
 
     var latitude = 0.0
     var longitude = 0.0
-    var searchLocations = SingleLiveEvent<ResultWrapper<List<SearchResultModel>>>()
+    private var _searchLocations =
+        SingleLiveEvent<ResultWrapper<List<SearchResultModel>>?>().apply { value = null }
+    val searchLocations: LiveData<ResultWrapper<List<SearchResultModel>>?> get() = _searchLocations
     var searchText = ""
     var editCounter = 0
 
@@ -33,7 +37,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val lattLong = "$latitude, $longitude"
 
-            searchLocations.postValue(NetworkHelper.safeApiCall(Dispatchers.IO) {
+            _searchLocations.postValue(NetworkHelper.safeApiCall(Dispatchers.IO) {
                 restController.getWeatherFactory().searchLocationByLattLong(lattLong)
             })
         }
@@ -42,6 +46,7 @@ class HomeViewModel @Inject constructor(
 
 
     fun startCountDown(text: String) {
+        if (searchText == text) return
         searchText = text
         viewModelScope.launch {
             delay(500)
@@ -54,7 +59,7 @@ class HomeViewModel @Inject constructor(
 
     private fun getLocationsByQueryText() {
         viewModelScope.launch {
-            searchLocations.postValue(NetworkHelper.safeApiCall(Dispatchers.IO) {
+            _searchLocations.postValue(NetworkHelper.safeApiCall(Dispatchers.IO) {
                 restController.getWeatherFactory().searchLocationByName(searchText)
             })
         }
