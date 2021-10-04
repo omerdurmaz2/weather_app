@@ -12,7 +12,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black"
+        android:background="@drawable/sun_rise"
         tools:context=".view.detail.DetailFragment">
 
 
@@ -20,15 +20,15 @@
             android:id="@+id/clDetailTop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gap6X"
+            android:layout_marginTop="@dimen/gap8X"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/ivDetailStatus"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:scaleType="fitXY"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -36,6 +36,7 @@
             <View
                 android:id="@+id/vDetailTitleLine"
                 android:layout_width="0.5dp"
+                android:visibility="gone"
                 android:layout_height="0dp"
                 android:layout_marginStart="@dimen/gap2X"
                 android:layout_marginTop="@dimen/gapX"
@@ -56,14 +57,14 @@
 
                 <TextView
                     android:id="@+id/tvDetailLocationName"
-                    style="@style/TextViewRobotoBoldStyleThree"
+                    style="@style/TextViewRobotoBoldHeadingStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="Savannah" />
 
                 <TextView
                     android:id="@+id/tvDetailDate"
-                    style="@style/TextViewRobotoRegularStyleOne"
+                    style="@style/TextViewRobotoRegularStyleThree"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -82,14 +83,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/clDetailTop"
-            tools:text="55" />
+            tools:text="55°" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
             android:id="@+id/rvDetailFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvDetailTemp"/>
+            app:layout_constraintTop_toBottomOf="@+id/tvDetailTemp"
+            app:layout_constraintVertical_bias="1" />
 
 
         <ProgressBar

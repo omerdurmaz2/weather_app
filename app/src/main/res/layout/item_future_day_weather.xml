@@ -10,21 +10,44 @@
 
     <TextView
         android:id="@+id/tvItemFutureDayName"
+        style="@style/TextViewRobotoBoldStyleThree"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/gap2X"
         android:paddingTop="@dimen/gap3X"
         android:paddingBottom="@dimen/gap3X"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Istanbul" />
 
+    <ImageView
+        android:id="@+id/ivItemFutureDayIcon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="@dimen/gap3X"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvItemFutureDayTemp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvItemFutureDayTemp"
+        style="@style/TextViewRobotoBoldStyleThree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/gap2X"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Istanbul" />
+
     <View
+        android:id="@+id/vItemFutureDayWeatherSeparator"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent" />
 

@@ -4,6 +4,6 @@ import android.view.View
 import androidx.navigation.NavController
 
 
-fun Double.tempFormat(): String{
-     return String.format("%.1f", this)
+fun Double.tempFormat(): String {
+    return String.format("%.0f", this).plus("°")
 }

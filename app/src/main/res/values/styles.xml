@@ -39,7 +39,7 @@
     </style>
 
     <style name="TextViewRobotoBoldHeadingStyleFive" parent="TextViewRobotoBoldStyle">
-        <item name="android:textSize">@dimen/dg_text_size_102</item>
+        <item name="android:textSize">@dimen/dg_text_size_170</item>
     </style>
 
     <style name="TextViewRobotoRegularStyleThree" parent="TextViewRobotoRegularStyle">

@@ -13,6 +13,7 @@ import com.android.weatherapp.service.ResultWrapper
 import com.android.weatherapp.util.Constants
 import com.android.weatherapp.util.DateUtils
 import com.android.weatherapp.util.ext.setGone
+import com.android.weatherapp.util.ext.setVisible
 import com.android.weatherapp.util.ext.showToast
 import com.android.weatherapp.util.ext.tempFormat
 import com.bumptech.glide.Glide
@@ -74,7 +75,9 @@ class DetailFragment : BaseFragment<DetailFragmentBinding>(R.layout.detail_fragm
         calendar.timeInMillis =
             DateUtils.getLongDateFromApiDate(value.consolidatedWeather[0].applicable_date)
 
+
         binding?.pbDetail?.setGone()
+        binding?.vDetailTitleLine?.setVisible()
         Constants.Server.apply {
             context?.let {
                 binding?.ivDetailStatus?.let { it1 ->
@@ -92,7 +95,7 @@ class DetailFragment : BaseFragment<DetailFragmentBinding>(R.layout.detail_fragm
         binding?.tvDetailLocationName?.text = value.title
         binding?.tvDetailDate?.text =
             DateUtils.getDayName(calendar.timeInMillis).plus(", ")
-                .plus(DateUtils.getMonthName(calendar.timeInMillis)).plus(" ")
+                .plus(DateUtils.get3LetterMonthName(calendar.timeInMillis)).plus(" ")
                 .plus(calendar.get(Calendar.DAY_OF_MONTH))
         binding?.tvDetailTemp?.text = value.consolidatedWeather[0].the_temp.tempFormat()
 

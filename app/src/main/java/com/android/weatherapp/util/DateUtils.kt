@@ -8,7 +8,9 @@ object DateUtils {
     private val appDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.US)
     private val yearFormat = SimpleDateFormat("yyyy", Locale.US)
     private val dayFormat = SimpleDateFormat("EEEE", Locale.US)
-    private val monthFormat = SimpleDateFormat("MMM", Locale.US)
+    private val dayFormat3Letter = SimpleDateFormat("EEE", Locale.US)
+    private val monthFormat = SimpleDateFormat("MMMM", Locale.US)
+    private val monthFormat3Letter = SimpleDateFormat("MMM", Locale.US)
 
     fun convertApiDateToAppDate(apiDate: String?): String {
         apiDate?.let {
@@ -35,12 +37,20 @@ object DateUtils {
         return apiDateFormat.parse(date).time
     }
 
+    fun get3LetterDayName(date: Long): String {
+        return dayFormat3Letter.format(date)
 
-    fun getDayName(date: Long): String{
+    }
+
+    fun getDayName(date: Long): String {
         return dayFormat.format(date)
     }
 
-    fun getMonthName(date: Long): String{
+    fun getMonthName(date: Long): String {
         return monthFormat.format(date)
+    }
+
+    fun get3LetterMonthName(date: Long): String {
+        return monthFormat3Letter.format(date)
     }
 }
