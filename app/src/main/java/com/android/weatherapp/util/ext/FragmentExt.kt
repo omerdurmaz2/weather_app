@@ -17,5 +17,7 @@ fun Fragment.showToast(
 fun Fragment.showSoftKeyboard() {
     val inputMethodManager =
         context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+    inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0)
 }
+
+fun Fragment.hideSoftKeyboard() = activity?.hideSoftKeyboard()

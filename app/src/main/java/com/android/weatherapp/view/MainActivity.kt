@@ -21,6 +21,5 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.viewModel = viewModel
-        Log.e("sss","activity on create")
     }
 }

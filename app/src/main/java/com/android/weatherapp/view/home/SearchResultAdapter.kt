@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.android.weatherapp.R
 import com.android.weatherapp.model.SearchResultModel
+import com.android.weatherapp.util.ext.setGone
 
 class SearchResultAdapter(
     val context: Context?,
@@ -18,6 +19,7 @@ class SearchResultAdapter(
 
     class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView = view.findViewById(R.id.tvItemLocationCity)
+        val seperator: View = view.findViewById(R.id.vItemLocationSeperator)
     }
 
 

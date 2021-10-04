@@ -12,6 +12,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
@@ -25,15 +26,14 @@ import com.android.weatherapp.databinding.HomeFragmentBinding
 import com.android.weatherapp.model.SearchResultModel
 import com.android.weatherapp.service.ResultWrapper
 import com.android.weatherapp.util.PermissionUtil
-import com.android.weatherapp.util.ext.showToast
 import com.android.weatherapp.view.MainActivity
 import com.google.android.gms.location.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import androidx.core.content.ContextCompat.getSystemService
-import com.android.weatherapp.util.ext.showSoftKeyboard
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.widget.addTextChangedListener
+import com.android.weatherapp.util.ext.*
 
 
 @AndroidEntryPoint
@@ -52,7 +52,6 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(R.layout.home_fragment) {
     override fun init() {
         binding?.viewModel = viewModel
 
-        Log.e("sss", "search text = ${viewModel.searchText}, lat: ${viewModel.latitude}")
         if (permissionUtil == null)
             permissionUtil = activity?.let { context?.let { it1 -> PermissionUtil(it, it1) } }
 
@@ -66,14 +65,16 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(R.layout.home_fragment) {
 
         if (viewModel.searchText == "" && viewModel.latitude == 0.0 && viewModel.longitude == 0.0) {
             getDeviceLocation()
-            Log.e("sss", "get device location 2")
         }
+
+        searchImeOptionListener()
     }
 
 
     private fun initRecyclerView() {
         if (listAdapter != null) return
         listAdapter = SearchResultAdapter(context, listOf()) {
+            hideSoftKeyboard()
             val bundle = Bundle()
             bundle.putString("location_id", it?.woeid.toString())
             navigate(R.id.action_homeFragment_to_detailFragment, bundle)
@@ -88,22 +89,27 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(R.layout.home_fragment) {
     override fun initTextChangeListeners() {
         super.initTextChangeListeners()
 
-        binding?.etSearchLocation?.addTextChangedListener(textChangeListener)
+        binding?.etSearchLocation?.doAfterTextChanged {
+            Log.e("sss", "doaftertextchange $it")
+            if (it.toString().trim() != "" && it.toString().trim() != viewModel.searchText)
+                binding?.pbHome?.setVisible()
+            else binding?.pbHome?.setGone()
+
+
+            viewModel.startCountDown(it.toString().trim())
+        }
     }
 
-    private val textChangeListener = object : TextWatcher {
-        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+    private fun searchImeOptionListener() {
+        binding?.tilSearchLocation?.editText?.setOnEditorActionListener { textView, i, keyEvent ->
 
+            if (i == EditorInfo.IME_ACTION_SEARCH) {
+                viewModel.startCountDown(binding?.etSearchLocation?.text.toString().trim())
+                hideSoftKeyboard()
+                true
+            }
+            false
         }
-
-        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-        }
-
-        override fun afterTextChanged(p0: Editable?) {
-            viewModel.editCounter++
-            viewModel.startCountDown(p0.toString().trim())
-        }
-
     }
 
 
@@ -120,10 +126,10 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(R.layout.home_fragment) {
         viewModel.searchLocations.removeObservers(viewLifecycleOwner)
 
         viewModel.searchLocations.observe(viewLifecycleOwner) {
+            binding?.pbHome?.setGone()
             when (it) {
                 is ResultWrapper.Success<*> -> {
                     var list = it.value as List<SearchResultModel?>
-                    Log.e("sss", "list$list")
                     listAdapter?.list = list
                     listAdapter?.notifyDataSetChanged()
                 }
@@ -144,15 +150,12 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(R.layout.home_fragment) {
     private fun getDeviceLocation() {
         permissionUtil?.checkPermissions {
             if (it) {
-                Log.e("sss", "has permission")
                 if (isLocationEnabled()) {
                     getDeviceLastLocation()
                 } else {
                     navigateToLocationSettings()
                 }
             } else {
-                Log.e("sss", "has not permission")
-
                 binding?.etSearchLocation?.requestFocus()
                 val imm =
                     context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
@@ -170,13 +173,13 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(R.layout.home_fragment) {
 
     @SuppressLint("MissingPermission")
     private fun getDeviceLastLocation() {
-        Log.e("sss", "get last location")
 
         locationClient?.lastLocation?.addOnCompleteListener {
             if (it.result != null) {
                 viewModel.latitude = it.result.latitude
                 viewModel.longitude = it.result.longitude
                 viewModel.getLocationsByLattLong()
+                binding?.pbHome?.setVisible()
             } else {
                 requestNewLocation()
             }
@@ -209,6 +212,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(R.layout.home_fragment) {
             viewModel.latitude = p0.lastLocation.latitude
             viewModel.longitude = p0.lastLocation.longitude
             viewModel.getLocationsByLattLong()
+            binding?.pbHome?.setVisible()
         }
     }
 

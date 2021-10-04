@@ -47,11 +47,16 @@ class HomeViewModel @Inject constructor(
 
     fun startCountDown(text: String) {
         if (searchText == text) return
+        editCounter++
+        Log.e("sss", "start countdown $editCounter")
         searchText = text
         viewModelScope.launch {
             delay(500)
             editCounter--
+            Log.e("sss", "start countdown $editCounter")
+
             if (searchText.isNotEmpty() && searchText.length >= 3 && editCounter == 0) {
+                Log.e("sss", "search text")
                 getLocationsByQueryText()
             }
         }

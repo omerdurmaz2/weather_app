@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/omerd/AndroidStudioProjects/WeatherApp/app/src/main/res/drawable/ic_baseline_my_location_24.xml" value="0.2064814814814815" />
         <entry key="..\:/Users/omerd/AndroidStudioProjects/WeatherApp/app/src/main/res/layout/activity_main.xml" value="0.121875" />
         <entry key="..\:/Users/omerd/AndroidStudioProjects/WeatherApp/app/src/main/res/layout/detail_fragment.xml" value="0.264" />
         <entry key="..\:/Users/omerd/AndroidStudioProjects/WeatherApp/app/src/main/res/layout/home_fragment.xml" value="0.136" />
