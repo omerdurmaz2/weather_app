@@ -1,3 +1,3 @@
 # weather_app
 
-![](https://github.com/omerdurmaz2/wheather_app/blob/master/screenshot.gif)
+![](https://github.com/omerdurmaz2/weather_app/blob/master/screenshot.gif)
