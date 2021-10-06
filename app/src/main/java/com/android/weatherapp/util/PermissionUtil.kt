@@ -26,7 +26,6 @@ class PermissionUtil(private val activity: FragmentActivity, private val context
     private var declineCounter = 0
 
     fun checkPermissions(callback: (Boolean) -> Unit) {
-        Log.e("sss", "check permission")
         var counter = 0
         for (element in permissions) {
             ActivityCompat.checkSelfPermission(
@@ -44,7 +43,6 @@ class PermissionUtil(private val activity: FragmentActivity, private val context
         else {
             requestPermissions.launch(permissions)
             context.lifecycleOwner()?.let { owner ->
-                Log.e("sss", "callback result")
                 requestResult.observe(owner) {
                     callback(it)
                     requestResult.removeObservers(owner)
@@ -56,10 +54,7 @@ class PermissionUtil(private val activity: FragmentActivity, private val context
 
     private val requestPermissions =
         activity.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
-            Log.e("sss", "request permissions")
             if (result.none { it.value == false }) {
-                Log.e("sss", "true")
-
                 requestResult.postValue(true)
             } else {
                 declineCounter++

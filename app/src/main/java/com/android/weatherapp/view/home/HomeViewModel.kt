@@ -1,6 +1,5 @@
 package com.android.weatherapp.view.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -48,15 +47,12 @@ class HomeViewModel @Inject constructor(
     fun startCountDown(text: String) {
         if (searchText == text) return
         editCounter++
-        Log.e("sss", "start countdown $editCounter")
         searchText = text
         viewModelScope.launch {
             delay(500)
             editCounter--
-            Log.e("sss", "start countdown $editCounter")
 
             if (searchText.isNotEmpty() && searchText.length >= 3 && editCounter == 0) {
-                Log.e("sss", "search text")
                 getLocationsByQueryText()
             }
         }

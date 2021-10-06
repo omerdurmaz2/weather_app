@@ -90,7 +90,6 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(R.layout.home_fragment) {
         super.initTextChangeListeners()
 
         binding?.etSearchLocation?.doAfterTextChanged {
-            Log.e("sss", "doaftertextchange $it")
             if (it.toString().trim() != "" && it.toString().trim() != viewModel.searchText)
                 binding?.pbHome?.setVisible()
             else binding?.pbHome?.setGone()
@@ -119,6 +118,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(R.layout.home_fragment) {
             binding?.etSearchLocation?.text?.clear()
             viewModel.searchText = ""
             getDeviceLocation()
+            hideSoftKeyboard()
         }
     }
 
@@ -190,8 +190,6 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(R.layout.home_fragment) {
 
     @SuppressLint("MissingPermission")
     private fun requestNewLocation() {
-        Log.e("sss", "request new location")
-
         val mLocationRequest = LocationRequest()
         mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         mLocationRequest.interval = 5
@@ -218,8 +216,6 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(R.layout.home_fragment) {
 
 
     private fun isLocationEnabled(): Boolean {
-
-        Log.e("sss", "is location enabled")
         val locationManager: LocationManager? =
             context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
         return locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) == true || locationManager?.isProviderEnabled(

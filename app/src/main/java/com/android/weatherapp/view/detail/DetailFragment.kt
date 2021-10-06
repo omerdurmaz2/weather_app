@@ -1,6 +1,5 @@
 package com.android.weatherapp.view.detail
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
@@ -53,7 +52,6 @@ class DetailFragment : BaseFragment<DetailFragmentBinding>(R.layout.detail_fragm
 
     private fun observeDetail() {
         viewModel.locationDetail.observe(viewLifecycleOwner) {
-            Log.e("sss", "result: $it")
             when (it) {
                 is ResultWrapper.Success<*> -> {
                     bindValues(it.value as LocationWeatherModel)
